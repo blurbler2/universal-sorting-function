@@ -7,15 +7,15 @@ typedef int (*compare_func)(const void*, const void*);
 
 void insertion_sort_universell(void *base, size_t nitems, size_t size, compare_func compar);
 
-// Vergleichsfunktionen Beispiel:
+// Vergleichsfunktionen
 int compare_int_asc(const void* a, const void* b);
 int compare_int_desc(const void* a, const void* b);
 int compare_float_asc(const void* a, const void* b);
 int compare_float_desc(const void* a, const void* b);
 
 struct Resistance {
-    double current;
     double voltage;
+    double current;
 };
 
 int compare_resistance_asc(const void* a, const void* b);

@@ -1,5 +1,7 @@
 #include <stdio.h>
-#include "sort.h"
+#include <assert.h>
+#include <math.h>
+#include "../src/sort.h"
 
 void print_int_array(const char* text, int *arr, size_t size) {
     printf("%-35s[", text);
@@ -26,8 +28,14 @@ void print_float_array(const char* text, float *arr, size_t size) {
 void print_resistance_array(const char* text, struct Resistance *arr, size_t size) {
     printf("%s\n[\n", text);
     for (size_t i = 0; i < size; i++) {
-        double R = arr[i].voltage / arr[i].current;
-        printf("    R=%.3f (V=%.2f, I=%.2f)", R, arr[i].voltage, arr[i].current);
+        if (arr[i].current == 0) {
+            printf("\tFehler: Strom darf nicht 0 sein - Division durch Null (V=%.2f, I=%.2f)", arr[i].voltage, arr[i].current);
+        } else if (arr[i].voltage == 0) {
+            printf("\tKurzschluss - Spannung ist 0 (V=%.2f, I=%.2f)", arr[i].voltage, arr[i].current);
+        } else {
+            double R = arr[i].voltage / arr[i].current;
+            printf("\tR=%.3f (V=%.2f, I=%.2f)", R, arr[i].voltage, arr[i].current);
+        }
         if (i != size - 1) {
             printf(", \n");
         } else {
@@ -37,7 +45,7 @@ void print_resistance_array(const char* text, struct Resistance *arr, size_t siz
     printf("];\n");
 }
 
-int main() {
+int main() {    
     int ints[] = {5,13,4,1,2, 100,0,23,3,3, 9, 7};
     size_t ints_size = sizeof(ints) / sizeof(ints[0]);
 
@@ -56,7 +64,9 @@ int main() {
         {2.2, 150},
         {0.9, 40},
         {3.3, 400},
-        {1.2, 120}
+        {1.2, 120},
+        {0, 1.5},   // 0/0 = NaN, should be sorted last
+        {1.5, 0}
     };
     size_t resistances_size = sizeof(resistances)/sizeof(resistances[0]);
 
@@ -87,6 +97,6 @@ int main() {
     insertion_sort_universell(resistances, resistances_size, sizeof(struct Resistance), compare_resistance_desc);
 
     print_resistance_array("Widerstände nach Sortierung absteigend (nach R = V/I): ", resistances, resistances_size);
-
+    
     return 0;
 }

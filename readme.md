@@ -4,12 +4,50 @@ Dieses Programm implementiert eine universelle Sortierfunktion namens insertion_
 
 Die Sortierfunktion verwendet das Insertionsort-Verfahren und arbeitet mit einem generischen void *-Pointer und einer Vergleichsfunktion, die entscheidet, ob zwei Elemente in der gewünschten Relation stehen.
 
-## Compilieren und Programm ausführen
+
+## Projektstruktur
+
+```
+.
+├── src/
+│   ├── sort.c         # Sortier-Implementierung
+│   └── sort.h         # Header (Structs, Funktionsdeklarationen)
+├── tests/
+│   ├── test_sort.c    # Testfunktionen für das Sortieren
+│   └── test_main.c    # Test-Runner (ruft Testfunktionen auf)
+├── examples/
+│   └── main.c         # Beispiel-/Demo-Programm
+├── README.md          # Diese Datei
+```
+
+## Kompilieren und Ausführen
 
 ```bash
-gcc main.c sort.c -o sortprog
+gcc src/main.c src/sort.c -o sortprog
 ./sortprog
 ```
+
+### Tests kompilieren und ausführen
+
+```bash
+gcc -o test_sort tests/test_main.c tests/test_sort.c src/sort.c -lm
+./test_sort
+```
+
+- Die Tests geben `All tests passed successfully.` aus, wenn alles funktioniert.
+- Das Beispiel zeigt die Sortierausgabe für ints, floats und Widerstände.
+
+## Weitere Tests hinzufügen
+- Neue Testfunktionen in `tests/test_sort.c` ergänzen.
+- Im `tests/test_main.c` aufrufen.
+
+## Neue Features hinzufügen
+- Neue Sortier-/Vergleichslogik in `src/sort.c` implementieren und in `src/sort.h` deklarieren.
+
+## Voraussetzungen
+- Standard-C-Compiler (z.B. gcc, clang)
+- Keine externen Abhängigkeiten
+
 
 ## Überblick
 
@@ -47,7 +85,7 @@ Vergleicht zwei struct Resistance nach voltage / current (absteigend).
 
 Die Vergleichsfunktion liefert:
 
-- 1 zurück, wenn das erste Element „größer“ als das zweite ist (für aufsteigende Sortierung) oder anders wie in der Relation definiert.
+- 1 zurück, wenn das erste Element "größer" als das zweite ist (für aufsteigende Sortierung) oder anders wie in der Relation definiert.
 
 - 0 sonst.
 
@@ -77,6 +115,12 @@ Vor und nach dem Sortieren werden die Arrays ausgegeben, sodass der Sortiererfol
 - Der memcpy-Befehl kopiert Bytes, um Elemente beliebigen Typs zu verschieben.
 
 - Die Vergleichsfunktion muss konsistent zur gewünschten Relation sein und 0 oder 1 (bzw. auch negativen/positiven Wert) liefern, abhängig von der Implementierung.
+
+- Division durch Null bei Widerstandsberechnung zB `R=inf (V=1.50, I=0.00)`
+
+## Teststrategie
+
+- test function
 
 ## Referenzen
 
