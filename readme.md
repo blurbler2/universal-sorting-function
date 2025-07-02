@@ -9,23 +9,32 @@ Die Sortierfunktion verwendet das Insertionsort-Verfahren und arbeitet mit einem
 ```
 universal-sorting-function/
 ├── src/
-│   ├── main.c         # Hauptprogramm mit Beispielen
-│   ├── sort.c         # Sortier-Implementierung
+│   ├── main.c         # Hauptprogramm mit Standard-Beispielen
+│   ├── main_10.c      # Beispielprogramm für 1/0-Variante (Aufgabenstellung)
+│   ├── sort.c         # Sortier-Implementierung (beide Varianten)
 │   └── sort.h         # Header (Structs, Funktionsdeklarationen)
 ├── tests/
 │   ├── test_main.c    # Test-Runner (ruft Testfunktionen auf)
-│   └── test_sort.c    # Testfunktionen für das Sortieren
+│   ├── test_sort.c    # Testfunktionen für das Sortieren
+│   └── test_sort.h    # Header für Testfunktionen
 ├── README.md          # Diese Datei
 └── .gitignore         # Git-Ignore-Datei
 ```
 
 ## 🛠️ Kompilieren und Ausführen
 
-### Hauptprogramm
+### Standard-Hauptprogramm (-1/0/1 Variante)
 ```bash
 cd src
 gcc -o main main.c sort.c -I.
 ./main
+```
+
+### 1/0-Variante (Aufgabenstellung)
+```bash
+cd src
+gcc -o main_10 main_10.c sort.c -I.
+./main_10
 ```
 
 ### Tests kompilieren und ausführen
@@ -36,7 +45,14 @@ gcc -o test_sort tests/test_main.c tests/test_sort.c src/sort.c -lm
 
 **Erwartete Ausgabe bei erfolgreichen Tests:**
 ```
-All tests passed successfully.
+🎉 ALLE TESTS ERFOLGREICH BESTANDEN!
+📊 Testabdeckung: 100%
+✅ Unit Tests: 6/6 bestanden
+✅ Integration Tests: 6/6 bestanden
+✅ Widerstands-Tests: 3/3 bestanden
+✅ Robustheits-Tests: 2/2 bestanden
+✅ Performance-Tests: 2/2 bestanden
+✅ Legacy Tests: 1/1 bestanden
 ```
 
 ## 🧪 Teststrategie
@@ -73,6 +89,28 @@ All tests passed successfully.
   - Ungültige Array-Größen
   - Ungültige Element-Größen
 
+### 5. **Performance Tests** (Optional)
+- **Ziel**: Überprüfen der Laufzeitkomplexität
+- **Testfälle**:
+  - Verschiedene Array-Größen (10, 100, 1000, 10000 Elemente)
+  - Best-Case, Average-Case, Worst-Case Szenarien
+
+### Beispiel:
+```c
+// In sort.c
+int compare_string_asc(const void* a, const void* b) {
+    return strcmp(*(const char**)a, *(const char**)b) > 0;
+}
+
+// In sort.h
+int compare_string_asc(const void* a, const void* b);
+
+// In test_sort.c
+void test_string_sort() {
+    // Test-Implementierung
+}
+```
+
 ## 📋 Voraussetzungen
 
 - **Compiler**: Standard-C-Compiler (gcc, clang, MSVC)
@@ -81,15 +119,25 @@ All tests passed successfully.
 
 ## 🔍 Technische Details
 
-### Universelle Sortierfunktion: `insertion_sort_universell`
+### Sortierfunktionen
 
-Universelle Insertionsort-Funktion für beliebige Datentypen. Die Funktion führt Insertionsort aus, indem sie jedes Element des Arrays an die richtige Position vor ihm einfügt.
+#### Standard-Variante: `insertion_sort_universell` (-1/0/1)
+Universelle Insertionsort-Funktion für beliebige Datentypen mit Standard-C-Interface.
 
 **Parameter:**
 - `void *base`: Pointer auf das erste Element des zu sortierenden Arrays
 - `size_t nitems`: Anzahl der Elemente im Array
 - `size_t size`: Größe eines einzelnen Elements in Bytes
 - `int (*compar)(const void *, const void *)`: Vergleichsfunktion
+
+#### Aufgabenstellung-Variante: `insertion_sort_10` (1/0)
+Variante, die exakt den Anforderungen der Aufgabenstellung entspricht.
+
+**Parameter:**
+- `void *base`: Pointer auf das erste Element des zu sortierenden Arrays
+- `size_t nitems`: Anzahl der Elemente im Array
+- `size_t size`: Größe eines einzelnen Elements in Bytes
+- `int (*compar)(const void *, const void *)`: Vergleichsfunktion (gibt 1/0 zurück)
 
 **Laufzeitkomplexität:**
 - **Best Case**: O(n) - bereits sortiert
@@ -98,11 +146,21 @@ Universelle Insertionsort-Funktion für beliebige Datentypen. Die Funktion führ
 
 ### Vergleichsfunktionen
 
+#### Standard-Vergleichsfunktionen (-1/0/1)
+
 | Funktion | Beschreibung | Rückgabewert |
 |----------|--------------|--------------|
-| `compare_int_asc/desc` | Integer-Vergleich | 1 wenn a > b, 0 sonst |
-| `compare_float_asc/desc` | Float-Vergleich | 1 wenn a > b, 0 sonst |
-| `compare_resistance_asc/desc` | Widerstandsvergleich | 1 wenn R1 > R2, 0 sonst, -1 bei Fehler |
+| `compare_int_asc/desc` | Integer-Vergleich | -1 wenn a < b, 1 wenn a > b, 0 wenn gleich |
+| `compare_float_asc/desc` | Float-Vergleich | -1 wenn a < b, 1 wenn a > b, 0 wenn gleich |
+| `compare_resistance_asc/desc` | Widerstandsvergleich | -1 wenn R1 < R2, 1 wenn R1 > R2, 0 wenn gleich, -1 bei Fehler |
+
+#### 1/0-Vergleichsfunktionen (Aufgabenstellung)
+
+| Funktion | Beschreibung | Rückgabewert |
+|----------|--------------|--------------|
+| `compare_int_asc_10` | Integer aufsteigend (<) | 1 wenn a < b, 0 sonst |
+| `compare_float_desc_10` | Float absteigend (>=) | 1 wenn a >= b, 0 sonst |
+| `compare_resistance_asc_10` | Widerstand aufsteigend (R1 < R2) | 1 wenn R1 < R2, 0 sonst |
 
 ### Sonderfälle bei Widerständen
 
@@ -115,6 +173,7 @@ Universelle Insertionsort-Funktion für beliebige Datentypen. Die Funktion führ
 
 ## 📈 Beispielhafte Ausgabe
 
+### Standard-Variante (main.c)
 ```
 Widerstände vor Sortierung:
 [
@@ -131,6 +190,23 @@ Widerstände nach Sortierung aufsteigend:
         R=0.022 (V=0.90, I=40.00), 
         Fehler: Strom darf nicht 0 sein - Division durch Null (V=1.50, I=0.00)
 ];
+```
+
+### 1/0-Variante (main_10.c)
+```
+=== 1/0-VARIANTE DER SORTIERFUNKTION (Aufgabenstellung) ===
+
+1. INT ARRAY - Relation: < (aufsteigend)
+==========================================
+Ints vor Sortierung:               [57, 15, 25, 96, 85, 48, 52, 83, 63, 29, 18, 53]
+Ints nach Sortierung (<):          [15, 18, 25, 29, 48, 52, 53, 57, 63, 83, 85, 96]
+Verifizierung: ✅ Korrekt sortiert
+
+2. FLOAT ARRAY - Relation: >= (absteigend)
+==========================================
+Floats vor Sortierung:                  [ 52.80, 86.00, 58.50, 67.20, 73.90, 13.90, 69.60, 49.60, 72.20, 57.30, 90.60, 54.10 ]
+Floats nach Sortierung (>=):            [ 90.60, 86.00, 73.90, 72.20, 69.60, 67.20, 58.50, 57.30, 54.10, 52.80, 49.60, 13.90 ]
+Verifizierung: ✅ Korrekt sortiert
 ```
 
 
